@@ -3,10 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Univotex - Welcome</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Hello World</h1>
-    <h2>This is a sub heading</h2>
+    <div class="welcome-container">
+        <header class="hero-section">
+            <div class="logo-circle">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h1>Univotex</h1>
+            <p>University Voting & Event Management</p>
+        </header>
+
+        <main class="login-options">
+            <p class="instruction">Please select your login path to continue</p>
+            
+            <button class="btn btn-student" onclick="navigateTo('student')">
+                <i class="fas fa-user-graduate"></i>
+                <span>Login as Student</span>
+            </button>
+
+            <button class="btn btn-admin" onclick="navigateTo('admin')">
+                <i class="fas fa-user-shield"></i>
+                <span>Login as Admin</span>
+            </button>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 Univotex. Secure Student Governance.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
