@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard – UVEM</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:       #0d1b2a;
+  --navy-mid:   #1a2e45;
+  --navy-light: #243b55;
+  --navy-card:  #162030;
+  --gold:       #c9963a;
+  --gold-light: #e8b86d;
+  --gold-dim:   rgba(201,150,58,0.14);
+  --green:      #3ecf8e;
+  --blue:       #5b9bd5;
+  --red:        #e05c5c;
+  --amber:      #f5c842;
+  --white:      #ffffff;
+  --text:       #e8edf4;
+  --muted:      #7a90a8;
+  --border:     rgba(255,255,255,0.07);
+  --sidebar-w:  240px;
+}
+
+html, body { height: 100%; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  display: flex; min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ══ SIDEBAR ══ */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--navy-card);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: fixed; inset: 0 auto 0 0;
+  z-index: 50;
+  animation: sideIn 0.5s ease both;
+}
+@keyframes sideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+.sidebar-logo {
+  padding: 1.75rem 1.5rem 1.25rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+}
+.sidebar-logo-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem; font-weight: 700; color: var(--white);
+}
+.sidebar-logo-text span { color: var(--gold); }
+
+.sidebar-section {
+  padding: 1.4rem 1rem 0.4rem;
+  font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted);
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.7rem 1.5rem; color: var(--muted);
+  text-decoration: none; font-size: 0.875rem; font-weight: 500;
+  cursor: pointer; border-left: 3px solid transparent;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-item.active { color: var(--gold-light); background: var(--gold-dim); border-left-color: var(--gold); }
+.nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+.sidebar-footer {
+  margin-top: auto; padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.user-pill { display: flex; align-items: center; gap: 0.75rem; }
+.user-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue), #7ebce8);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; font-weight: 700; color: var(--navy);
+  flex-shrink: 0;
+}
+.user-name  { font-size: 0.875rem; font-weight: 600; color: var(--text); }
+.user-id    { font-size: 0.7rem; color: var(--muted); }
+.logout-btn {
+  margin-left: auto; background: none; border: none;
+  color: var(--muted); cursor: pointer; font-size: 1rem;
+  transition: color 0.2s;
+}
+.logout-btn:hover { color: var(--red); }
+
+/* ══ MAIN ══ */
+.main {
+  margin-left: var(--sidebar-w); flex: 1;
+  display: flex; flex-direction: column; min-height: 100vh;
+}
+
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 2.5rem;
+  background: rgba(13,27,42,0.6); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 40;
+  animation: topIn 0.5s 0.1s ease both;
+}
+@keyframes topIn {
+  from { opacity:0; transform: translateY(-10px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+.topbar h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem; font-weight: 700; color: var(--white);
+}
+.topbar p { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }
+
+.topbar-right { display: flex; align-items: center; gap: 0.75rem; }
+.notif-btn {
+  position: relative; background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border); border-radius: 8px;
+  width: 38px; height: 38px; display: flex; align-items: center;
+  justify-content: center; cursor: pointer; font-size: 1rem;
+  transition: background 0.2s;
+}
+.notif-btn:hover { background: rgba(255,255,255,0.1); }
+.notif-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--gold); border: 2px solid var(--navy-card);
+}
+
+/* ══ CONTENT ══ */
+.content {
+  padding: 2rem 2.5rem; flex: 1;
+  animation: contentIn 0.6s 0.2s ease both;
+}
+@keyframes contentIn {
+  from { opacity:0; transform: translateY(16px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+/* ── Welcome banner ── */
+.welcome-banner {
+  background: linear-gradient(135deg, var(--navy-light), var(--navy-mid));
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 2rem 2.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem;
+  position: relative; overflow: hidden;
+}
+.welcome-banner::before {
+  content: '';
+  position: absolute; right: -60px; top: -60px;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,150,58,0.12), transparent 70%);
+}
+.welcome-banner::after {
+  content: '🗳️';
+  position: absolute; right: 2rem; top: 50%;
+  transform: translateY(-50%);
+  font-size: 5rem; opacity: 0.06;
+}
+.welcome-text h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem; font-weight: 700; color: var(--white);
+}
+.welcome-text h2 span { color: var(--gold-light); font-style: italic; }
+.welcome-text p { color: rgba(255,255,255,0.5); font-size: 0.875rem; margin-top: 0.35rem; }
+
+.vote-now-btn {
+  padding: 0.85rem 2rem;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--navy); border: none; border-radius: 10px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 700;
+  cursor: pointer; white-space: nowrap; position: relative; z-index: 1;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(201,150,58,0.35);
+}
+.vote-now-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,150,58,0.45); }
+.vote-now-btn:disabled {
+  background: rgba(255,255,255,0.1); color: var(--muted);
+  box-shadow: none; cursor: not-allowed; transform: none;
+}
+
+/* ── Cards row ── */
+.cards-row {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 1.25rem; margin-bottom: 2rem;
+}
+.info-card {
+  background: var(--navy-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.4rem;
+  transition: transform 0.2s;
+}
+.info-card:hover { transform: translateY(-2px); }
+.info-card-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+.info-card-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem; font-weight: 700; color: var(--white); line-height: 1;
+}
+.info-card-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; }
+.info-card-sub {
+  margin-top: 0.6rem; font-size: 0.75rem;
+  display: inline-block; padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+}
+.info-card-sub.green { background: rgba(62,207,142,0.12); color: var(--green); }
+.info-card-sub.blue  { background: rgba(91,155,213,0.12);  color: var(--blue); }
+.info-card-sub.amber { background: rgba(245,200,66,0.12);  color: var(--amber); }
+
+/* ── Mid grid ── */
+.mid-grid {
+  display: grid; grid-template-columns: 1fr 320px;
+  gap: 1.25rem; margin-bottom: 2rem;
+}
+
+/* Panel */
+.panel {
+  background: var(--navy-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.5rem;
+}
+.panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.panel-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 700; color: var(--white);
+}
+.panel-action {
+  font-size: 0.78rem; color: var(--gold); cursor: pointer;
+  background: none; border: none; font-family: 'DM Sans', sans-serif;
+  font-weight: 500; transition: opacity 0.2s;
+}
+.panel-action:hover { opacity: 0.7; }
+
+/* ── Voting section ── */
+.voting-status-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.85rem 1.1rem;
+  background: rgba(62,207,142,0.07);
+  border: 1px solid rgba(62,207,142,0.2);
+  border-radius: 10px; margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+}
+.vs-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green);
+  animation: pulse2 1.8s infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse2 {
+  0%,100%{ opacity:1; } 50%{ opacity:0.3; }
+}
+.vs-label { color: var(--green); font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+.vs-info { color: var(--muted); font-size: 0.8rem; }
+
+/* Candidate cards */
+.candidate-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.candidate-card {
+  background: rgba(255,255,255,0.03);
+  border: 2px solid var(--border);
+  border-radius: 14px; padding: 1.1rem;
+  cursor: pointer; transition: border-color 0.25s, background 0.25s, transform 0.2s;
+  text-align: center; position: relative;
+}
+.candidate-card:hover { border-color: rgba(201,150,58,0.3); background: var(--gold-dim); transform: translateY(-2px); }
+.candidate-card.selected {
+  border-color: var(--gold); background: var(--gold-dim);
+}
+.candidate-card.selected::after {
+  content: '✓';
+  position: absolute; top: 0.6rem; right: 0.75rem;
+  font-size: 0.8rem; font-weight: 700;
+  color: var(--gold);
+}
+.candidate-card.voted-card {
+  border-color: var(--green); background: rgba(62,207,142,0.07);
+  cursor: default; transform: none;
+}
+.candidate-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 700; margin: 0 auto 0.6rem;
+  color: var(--navy);
+}
+.candidate-name { font-size: 0.9rem; font-weight: 600; }
+.candidate-pos  { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+
+.vote-action-row {
+  margin-top: 1.25rem; display: flex;
+  align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem;
+}
+.vote-action-info { font-size: 0.8rem; color: var(--muted); }
+.cast-vote-btn {
+  padding: 0.75rem 2rem;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--navy); border: none; border-radius: 9px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700;
+  cursor: pointer; transition: opacity 0.2s, transform 0.2s;
+  box-shadow: 0 4px 16px rgba(201,150,58,0.3);
+}
+.cast-vote-btn:hover { opacity:0.85; transform: translateY(-1px); }
+.cast-vote-btn:disabled { background: rgba(255,255,255,0.08); color: var(--muted); box-shadow:none; cursor:not-allowed; transform:none; }
+
+/* voted confirmation */
+.voted-confirm {
+  display: none; text-align: center;
+  padding: 1.5rem; margin-top: 0.5rem;
+}
+.voted-confirm .check-circle {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: rgba(62,207,142,0.15);
+  border: 2px solid var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; margin: 0 auto 1rem;
+  animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes popIn {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+.voted-confirm h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem; font-weight: 700; color: var(--white);
+}
+.voted-confirm p { font-size: 0.85rem; color: var(--muted); margin-top: 0.4rem; }
+
+/* Events list */
+.event-list { display: flex; flex-direction: column; gap: 0.8rem; }
+.event-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 0.9rem 1rem; transition: background 0.2s;
+}
+.event-card:hover { background: rgba(255,255,255,0.06); }
+.event-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.4rem; }
+.event-card-name { font-size: 0.875rem; font-weight: 600; }
+.event-tag {
+  font-size: 0.65rem; font-weight: 600;
+  padding: 0.15rem 0.5rem; border-radius: 999px;
+}
+.event-tag.open     { background: rgba(62,207,142,0.12); color: var(--green); }
+.event-tag.upcoming { background: rgba(91,155,213,0.12);  color: var(--blue); }
+.event-tag.closed   { background: rgba(255,255,255,0.06); color: var(--muted); }
+.event-card-meta { font-size: 0.76rem; color: var(--muted); display: flex; gap: 1rem; }
+.register-btn {
+  margin-top: 0.7rem; width: 100%;
+  padding: 0.5rem; border-radius: 7px;
+  border: 1px solid rgba(201,150,58,0.3);
+  background: var(--gold-dim);
+  color: var(--gold-light); font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem; font-weight: 600; cursor: pointer;
+  transition: background 0.2s;
+}
+.register-btn:hover { background: rgba(201,150,58,0.25); }
+.register-btn:disabled {
+  background: rgba(62,207,142,0.08); color: var(--green);
+  border-color: rgba(62,207,142,0.2); cursor: default;
+}
+
+/* ── Bottom row ── */
+.bottom-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+/* Timeline */
+.timeline { display: flex; flex-direction: column; gap: 1rem; }
+.timeline-item {
+  display: flex; gap: 1rem; align-items: flex-start;
+}
+.timeline-dot-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  flex-shrink: 0;
+}
+.timeline-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 4px;
+}
+.timeline-dot.gold  { background: var(--gold); }
+.timeline-dot.green { background: var(--green); }
+.timeline-dot.blue  { background: var(--blue); }
+.timeline-dot.muted { background: rgba(255,255,255,0.15); }
+.timeline-line {
+  width: 1px; flex: 1; background: var(--border);
+  margin-top: 4px; min-height: 20px;
+}
+.timeline-body .tl-title { font-size: 0.875rem; font-weight: 500; }
+.timeline-body .tl-time  { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+
+/* My registrations table */
+.table { width: 100%; border-collapse: collapse; }
+.table th {
+  font-size: 0.67rem; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted);
+  padding: 0 0 0.65rem; border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+.table td {
+  padding: 0.75rem 0; font-size: 0.83rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+.table tr:last-child td { border-bottom: none; }
+
+/* Confirm modal */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(5,12,20,0.82); backdrop-filter: blur(6px);
+  z-index: 200; display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--navy-card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 2rem; width: 100%; max-width: 420px;
+  animation: modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+  text-align: center;
+}
+@keyframes modalPop {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.modal-big-icon { font-size: 3rem; margin-bottom: 1rem; }
+.modal h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem; font-weight: 700; color: var(--white);
+  margin-bottom: 0.5rem;
+}
+.modal p { color: var(--muted); font-size: 0.875rem; line-height: 1.65; }
+.modal-choice {
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1rem; margin: 1.25rem 0;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.modal-choice-avatar {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 700; color: var(--navy);
+}
+.modal-choice-name { font-weight: 600; font-size: 0.95rem; }
+.modal-choice-pos  { font-size: 0.75rem; color: var(--muted); }
+.modal-actions { display: flex; gap: 0.75rem; justify-content: center; margin-top: 0.5rem; }
+.btn-cancel {
+  flex: 1; padding: 0.75rem; border-radius: 8px;
+  border: 1px solid var(--border); background: none;
+  color: var(--muted); font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem; cursor: pointer; transition: color 0.2s;
+}
+.btn-cancel:hover { color: var(--text); }
+.btn-confirm {
+  flex: 1; padding: 0.75rem; border-radius: 8px;
+  border: none; background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--navy); font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem; font-weight: 700; cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-confirm:hover { opacity: 0.85; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 300;
+  background: var(--navy-light); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1rem 1.25rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  font-size: 0.875rem; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  transform: translateY(80px); opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+  max-width: 300px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+@media (max-width: 1024px) {
+  .mid-grid, .bottom-grid { grid-template-columns: 1fr; }
+  .cards-row { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .content { padding: 1.25rem; }
+  .topbar { padding: 1rem 1.25rem; }
+  .cards-row { grid-template-columns: 1fr; }
+  .candidate-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">🎓</div>
+    <span class="sidebar-logo-text">UV<span>EM</span></span>
+  </div>
+
+  <div class="sidebar-section">My Portal</div>
+  <div class="nav-item active" onclick="setNav(this)"><span class="nav-icon">🏠</span> Dashboard</div>
+  <div class="nav-item" onclick="setNav(this)"><span class="nav-icon">🗳️</span> Vote</div>
+  <div class="nav-item" onclick="setNav(this)"><span class="nav-icon">📅</span> Events</div>
+  <div class="nav-item" onclick="setNav(this)"><span class="nav-icon">📋</span> My Registrations</div>
+
+  <div class="sidebar-section">Info</div>
+  <div class="nav-item" onclick="setNav(this)"><span class="nav-icon">📊</span> Live Results</div>
+  <div class="nav-item" onclick="setNav(this)"><span class="nav-icon">🔔</span> Notices</div>
+
+  <div class="sidebar-footer">
+    <div class="user-pill">
+      <div class="user-avatar">A</div>
+      <div>
+        <div class="user-name">Aye Mu</div>
+        <div class="user-id">22IT0041 · IT</div>
+      </div>
+      <button class="logout-btn" onclick="window.location.href='login.html'" title="Logout">⬅</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<main class="main">
+
+  <div class="topbar">
+    <div>
+      <h1>Student Dashboard</h1>
+      <p>Monday, March 09, 2026 · Parul University</p>
+    </div>
+    <div class="topbar-right">
+      <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+      <div class="welcome-text">
+        <h2>Welcome back, <span>Aye Mu</span> 👋</h2>
+        <p>Student Council Election 2025–26 is live. Your vote matters — cast it now!</p>
+      </div>
+      <button class="vote-now-btn" id="topVoteBtn" onclick="scrollToVoting()">🗳️ Vote Now</button>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="cards-row">
+      <div class="info-card">
+        <div class="info-card-icon">🗳️</div>
+        <div class="info-card-val" id="voteCardVal">1</div>
+        <div class="info-card-label">Active Election</div>
+        <span class="info-card-sub green" id="voteCardSub">● Live Now</span>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">📅</div>
+        <div class="info-card-val">3</div>
+        <div class="info-card-label">Upcoming Events</div>
+        <span class="info-card-sub blue">● Open Reg.</span>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">✅</div>
+        <div class="info-card-val">2</div>
+        <div class="info-card-label">My Registrations</div>
+        <span class="info-card-sub amber">Confirmed</span>
+      </div>
+    </div>
+
+    <!-- Mid Grid -->
+    <div class="mid-grid">
+
+      <!-- Voting Panel -->
+      <div class="panel" id="votingPanel">
+        <div class="panel-header">
+          <span class="panel-title">🗳️ Cast Your Vote</span>
+          <button class="panel-action">View Candidates</button>
+        </div>
+
+        <div class="voting-status-bar">
+          <span class="vs-label"><div class="vs-dot"></div> Election is LIVE</span>
+          <span class="vs-info">Ends: March 15, 2026 · 11:59 PM</span>
+        </div>
+
+        <div style="margin-bottom:1.1rem">
+          <div style="font-size:0.875rem;font-weight:600;color:var(--white)">Student Council Election 2025–26</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-top:0.2rem">Select one candidate for President</div>
+        </div>
+
+        <!-- Candidates -->
+        <div class="candidate-grid" id="candidateGrid">
+          <div class="candidate-card" onclick="selectCandidate(this, 'Aryan Mehta', '4th Year · CS', 0)">
+            <div class="candidate-avatar" style="background:linear-gradient(135deg,#f6a94b,#f5c842)">AM</div>
+            <div class="candidate-name">Aryan Mehta</div>
+            <div class="candidate-pos">4th Year · CS</div>
+          </div>
+          <div class="candidate-card" onclick="selectCandidate(this, 'Priya Sharma', '3rd Year · IT', 1)">
+            <div class="candidate-avatar" style="background:linear-gradient(135deg,#5b9bd5,#87c2f0)">PS</div>
+            <div class="candidate-name">Priya Sharma</div>
+            <div class="candidate-pos">3rd Year · IT</div>
+          </div>
+          <div class="candidate-card" onclick="selectCandidate(this, 'Ravi Patel', '4th Year · EC', 2)">
+            <div class="candidate-avatar" style="background:linear-gradient(135deg,#3ecf8e,#7ee8c0)">RP</div>
+            <div class="candidate-name">Ravi Patel</div>
+            <div class="candidate-pos">4th Year · EC</div>
+          </div>
+          <div class="candidate-card" onclick="selectCandidate(this, 'Sneha Joshi', '3rd Year · ME', 3)">
+            <div class="candidate-avatar" style="background:linear-gradient(135deg,#e05c5c,#f08080)">SJ</div>
+            <div class="candidate-name">Sneha Joshi</div>
+            <div class="candidate-pos">3rd Year · ME</div>
+          </div>
+        </div>
+
+        <div class="vote-action-row">
+          <span class="vote-action-info" id="voteActionInfo">Select a candidate to vote</span>
+          <button class="cast-vote-btn" id="castVoteBtn" disabled onclick="openVoteModal()">Cast Vote</button>
+        </div>
+
+        <!-- Voted Confirmation -->
+        <div class="voted-confirm" id="votedConfirm">
+          <div class="check-circle">✅</div>
+          <h4>Vote Cast Successfully!</h4>
+          <p>You voted for <strong id="votedFor" style="color:var(--gold-light)"></strong>. Thank you for participating in the democratic process.</p>
+          <p style="margin-top:0.75rem;font-size:0.75rem;color:var(--muted)">Your vote is anonymous and secured in the system.</p>
+        </div>
+      </div>
+
+      <!-- Events Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">📅 Events</span>
+          <button class="panel-action">All Events →</button>
+        </div>
+        <div class="event-list">
+          <div class="event-card">
+            <div class="event-card-header">
+              <span class="event-card-name">TechFest 2026</span>
+              <span class="event-tag open">Open</span>
+            </div>
+            <div class="event-card-meta">
+              <span>📅 Mar 12</span><span>📍 Auditorium</span>
+            </div>
+            <button class="register-btn" onclick="registerEvent(this, 'TechFest 2026')">Register Now</button>
+          </div>
+          <div class="event-card">
+            <div class="event-card-header">
+              <span class="event-card-name">AI & ML Seminar</span>
+              <span class="event-tag upcoming">Upcoming</span>
+            </div>
+            <div class="event-card-meta">
+              <span>📅 Mar 18</span><span>📍 Seminar Hall B</span>
+            </div>
+            <button class="register-btn" onclick="registerEvent(this, 'AI & ML Seminar')">Register Now</button>
+          </div>
+          <div class="event-card">
+            <div class="event-card-header">
+              <span class="event-card-name">Cultural Night 2026</span>
+              <span class="event-tag upcoming">Upcoming</span>
+            </div>
+            <div class="event-card-meta">
+              <span>📅 Mar 25</span><span>📍 Open Ground</span>
+            </div>
+            <button class="register-btn" onclick="registerEvent(this, 'Cultural Night 2026')">Register Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Grid -->
+    <div class="bottom-grid">
+
+      <!-- Activity Timeline -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">🕐 My Activity</span>
+        </div>
+        <div class="timeline" id="activityTimeline">
+          <div class="timeline-item">
+            <div class="timeline-dot-wrap">
+              <div class="timeline-dot green"></div>
+              <div class="timeline-line"></div>
+            </div>
+            <div class="timeline-body">
+              <div class="tl-title">Logged into UVEM Portal</div>
+              <div class="tl-time">Today · 10:14 AM</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot-wrap">
+              <div class="timeline-dot blue"></div>
+              <div class="timeline-line"></div>
+            </div>
+            <div class="timeline-body">
+              <div class="tl-title">Registered for TechFest 2026</div>
+              <div class="tl-time">Mar 8 · 3:45 PM</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot-wrap">
+              <div class="timeline-dot blue"></div>
+              <div class="timeline-line"></div>
+            </div>
+            <div class="timeline-body">
+              <div class="tl-title">Registered for Hackathon 2026</div>
+              <div class="tl-time">Feb 20 · 9:12 AM</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot-wrap">
+              <div class="timeline-dot muted"></div>
+            </div>
+            <div class="timeline-body">
+              <div class="tl-title">Account created</div>
+              <div class="tl-time">Jan 5 · Enrollment</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Registrations -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">📋 My Registrations</span>
+        </div>
+        <table class="table" id="regTable">
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="regTableBody">
+            <tr>
+              <td style="font-weight:500">TechFest 2026</td>
+              <td style="color:var(--muted);font-size:0.78rem">Mar 12</td>
+              <td><span style="background:rgba(62,207,142,0.12);color:var(--green);font-size:0.7rem;font-weight:600;padding:0.18rem 0.55rem;border-radius:999px">Confirmed</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Hackathon 2026</td>
+              <td style="color:var(--muted);font-size:0.78rem">Feb 28</td>
+              <td><span style="background:rgba(255,255,255,0.06);color:var(--muted);font-size:0.7rem;font-weight:600;padding:0.18rem 0.55rem;border-radius:999px">Completed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div><!-- /content -->
+</main>
+
+<!-- Vote Confirm Modal -->
+<div class="modal-overlay" id="voteModal">
+  <div class="modal">
+    <div class="modal-big-icon">🗳️</div>
+    <h3>Confirm Your Vote</h3>
+    <p>You are about to cast your vote. This action <strong>cannot be undone</strong>.</p>
+    <div class="modal-choice">
+      <div class="modal-choice-avatar" id="modalAvatar" style="background:linear-gradient(135deg,#f6a94b,#f5c842)">AM</div>
+      <div>
+        <div class="modal-choice-name" id="modalName">Aryan Mehta</div>
+        <div class="modal-choice-pos" id="modalPos">4th Year · CS</div>
+      </div>
+    </div>
+    <p style="font-size:0.78rem;color:var(--muted)">Your vote is confidential and will be securely recorded.</p>
+    <div class="modal-actions" style="margin-top:1.25rem">
+      <button class="btn-cancel" onclick="closeVoteModal()">Go Back</button>
+      <button class="btn-confirm" onclick="confirmVote()">✓ Confirm Vote</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span id="toastMsg">Action completed.</span>
+</div>
+
+<script>
+let selectedCandidate = null;
+const avatarColors = [
+  'linear-gradient(135deg,#f6a94b,#f5c842)',
+  'linear-gradient(135deg,#5b9bd5,#87c2f0)',
+  'linear-gradient(135deg,#3ecf8e,#7ee8c0)',
+  'linear-gradient(135deg,#e05c5c,#f08080)'
+];
+const avatarInitials = ['AM','PS','RP','SJ'];
+
+function selectCandidate(el, name, pos, idx) {
+  if (document.getElementById('castVoteBtn').disabled && document.getElementById('votedConfirm').style.display !== 'none') return;
+  if (el.classList.contains('voted-card')) return;
+  document.querySelectorAll('.candidate-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedCandidate = { name, pos, idx };
+  document.getElementById('castVoteBtn').disabled = false;
+  document.getElementById('voteActionInfo').textContent = `Selected: ${name}`;
+}
+
+function openVoteModal() {
+  if (!selectedCandidate) return;
+  document.getElementById('modalName').textContent   = selectedCandidate.name;
+  document.getElementById('modalPos').textContent    = selectedCandidate.pos;
+  document.getElementById('modalAvatar').textContent = avatarInitials[selectedCandidate.idx];
+  document.getElementById('modalAvatar').style.background = avatarColors[selectedCandidate.idx];
+  document.getElementById('voteModal').classList.add('open');
+}
+
+function closeVoteModal() {
+  document.getElementById('voteModal').classList.remove('open');
+}
+
+function confirmVote() {
+  closeVoteModal();
+  // hide candidates, show confirmation
+  document.getElementById('candidateGrid').style.display = 'none';
+  document.getElementById('castVoteBtn').style.display   = 'none';
+  document.getElementById('voteActionInfo').style.display= 'none';
+  document.querySelector('.vote-action-row').style.display = 'none';
+
+  const confirm = document.getElementById('votedConfirm');
+  confirm.style.display = 'block';
+  document.getElementById('votedFor').textContent = selectedCandidate.name;
+
+  // Update topbar button
+  document.getElementById('topVoteBtn').textContent = '✓ Voted';
+  document.getElementById('topVoteBtn').disabled = true;
+
+  // Update info card
+  document.getElementById('voteCardVal').textContent = '✓';
+  document.getElementById('voteCardSub').textContent = '● Vote Cast';
+  document.getElementById('voteCardSub').className   = 'info-card-sub green';
+
+  // Add to timeline
+  const tl = document.getElementById('activityTimeline');
+  const item = document.createElement('div');
+  item.className = 'timeline-item';
+  item.innerHTML = `<div class="timeline-dot-wrap"><div class="timeline-dot gold"></div><div class="timeline-line"></div></div>
+    <div class="timeline-body"><div class="tl-title">Voted for ${selectedCandidate.name}</div><div class="tl-time">Today · Just now</div></div>`;
+  tl.insertBefore(item, tl.firstChild);
+
+  showToast('🗳️ Your vote has been recorded!');
+}
+
+function scrollToVoting() {
+  document.getElementById('votingPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function registerEvent(btn, name) {
+  btn.disabled = true;
+  btn.textContent = '✓ Registered';
+
+  // Add to registrations table
+  const tbody = document.getElementById('regTableBody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td style="font-weight:500">${name}</td>
+    <td style="color:var(--muted);font-size:0.78rem">Mar 2026</td>
+    <td><span style="background:rgba(62,207,142,0.12);color:var(--green);font-size:0.7rem;font-weight:600;padding:0.18rem 0.55rem;border-radius:999px">Confirmed</span></td>`;
+  tbody.appendChild(tr);
+
+  // Update info card
+  const card = document.querySelectorAll('.info-card')[1].querySelector('.info-card-val');
+  card.textContent = parseInt(card.textContent) - 1;
+
+  const regCard = document.querySelectorAll('.info-card')[2].querySelector('.info-card-val');
+  regCard.textContent = parseInt(regCard.textContent) + 1;
+
+  showToast(`📅 Registered for ${name}!`);
+}
+
+function setNav(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Toast
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// Close modal on overlay click
+document.getElementById('voteModal').addEventListener('click', function(e) {
+  if (e.target === this) closeVoteModal();
+});
+</script>
+</body>
+</html>

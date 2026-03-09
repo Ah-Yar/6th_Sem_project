@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login – UVEM | Parul University</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0d1b2a;
+    --navy-mid: #1a2e45;
+    --navy-light: #243b55;
+    --gold: #c9963a;
+    --gold-light: #e8b86d;
+    --cream: #f7f3ed;
+    --white: #ffffff;
+    --muted: #8a9ab5;
+    --error: #e05c5c;
+    --success: #4caf82;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+  }
+
+  /* ── LEFT PANEL ── */
+  .left-panel {
+    background: var(--navy);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    padding: 3rem;
+    animation: panelIn 0.8s ease both;
+  }
+
+  @keyframes panelIn {
+    from { opacity:0; transform: translateX(-30px); }
+    to   { opacity:1; transform: translateX(0); }
+  }
+
+  .left-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 30% 20%, rgba(201,150,58,0.14) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 60% at 80% 80%, rgba(26,46,69,0.9) 0%, transparent 70%);
+  }
+  .left-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(201,150,58,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,150,58,0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .left-content { position: relative; z-index: 2; }
+
+  .brand {
+    display: flex; align-items: center; gap: 0.75rem;
+    text-decoration: none;
+  }
+  .brand-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+  }
+  .brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; font-weight: 700;
+    color: var(--white);
+  }
+  .brand-name span { color: var(--gold); }
+
+  .left-hero { margin-top: 5rem; }
+  .left-hero-label {
+    font-size: 0.7rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--gold-light);
+    font-weight: 600; margin-bottom: 1.25rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .left-hero-label::before {
+    content: ''; display: block;
+    width: 28px; height: 1px; background: var(--gold);
+  }
+  .left-hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-weight: 700; line-height: 1.12;
+    color: var(--white);
+  }
+  .left-hero h1 em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .left-hero p {
+    margin-top: 1.25rem;
+    color: rgba(255,255,255,0.45);
+    font-size: 0.95rem; line-height: 1.75; max-width: 380px;
+  }
+
+  /* feature pills */
+  .feature-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 2.5rem; }
+  .pill {
+    display: flex; align-items: center; gap: 0.45rem;
+    padding: 0.45rem 1rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(201,150,58,0.2);
+    border-radius: 999px;
+    color: rgba(255,255,255,0.65);
+    font-size: 0.8rem;
+  }
+  .pill-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--gold);
+  }
+
+  .left-footer {
+    position: relative; z-index: 2;
+    color: rgba(255,255,255,0.25);
+    font-size: 0.75rem;
+  }
+  .left-footer a { color: rgba(255,255,255,0.35); text-decoration: none; }
+
+  /* ── RIGHT PANEL ── */
+  .right-panel {
+    background: var(--cream);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 3rem 2rem;
+    position: relative;
+    animation: panelRight 0.8s 0.15s ease both;
+  }
+
+  @keyframes panelRight {
+    from { opacity:0; transform: translateX(30px); }
+    to   { opacity:1; transform: translateX(0); }
+  }
+
+  .right-panel::before {
+    content: '';
+    position: absolute; top: 0; left: 0; bottom: 0; width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(201,150,58,0.3), transparent);
+  }
+
+  .login-box { width: 100%; max-width: 420px; }
+
+  .login-header { margin-bottom: 2rem; }
+  .login-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem; font-weight: 700;
+    color: var(--navy);
+  }
+  .login-header p { color: #6b7280; font-size: 0.9rem; margin-top: 0.3rem; }
+
+  /* Role toggle */
+  .role-toggle {
+    display: flex;
+    background: rgba(13,27,42,0.06);
+    border-radius: 10px; padding: 4px;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  .role-btn {
+    flex: 1; padding: 0.65rem;
+    border: none; background: transparent;
+    border-radius: 8px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem; font-weight: 500;
+    color: #6b7280;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    transition: color 0.25s;
+    position: relative; z-index: 1;
+  }
+  .role-btn.active { color: var(--navy); font-weight: 600; }
+  .role-slider {
+    position: absolute; top: 4px; bottom: 4px;
+    width: calc(50% - 4px);
+    background: var(--white);
+    border-radius: 7px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    left: 4px;
+  }
+  .role-slider.student { left: calc(50%); }
+
+  /* Form */
+  .form-group { margin-bottom: 1.25rem; }
+  .form-group label {
+    display: block;
+    font-size: 0.8rem; font-weight: 600;
+    color: var(--navy); letter-spacing: 0.04em;
+    text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .input-wrap { position: relative; }
+  .input-wrap .input-icon {
+    position: absolute; left: 1rem; top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem; pointer-events: none;
+    opacity: 0.5;
+  }
+  .form-group input {
+    width: 100%; padding: 0.85rem 1rem 0.85rem 2.75rem;
+    background: var(--white);
+    border: 1.5px solid rgba(13,27,42,0.12);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; color: var(--navy);
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-group input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,150,58,0.12);
+  }
+  .form-group input::placeholder { color: #aab2bd; }
+
+  /* Password toggle */
+  .pass-toggle {
+    position: absolute; right: 1rem; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none; cursor: pointer;
+    font-size: 1rem; opacity: 0.45;
+    transition: opacity 0.2s;
+  }
+  .pass-toggle:hover { opacity: 0.8; }
+
+  .form-row {
+    display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 1.75rem;
+  }
+  .remember {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.85rem; color: #6b7280; cursor: pointer;
+  }
+  .remember input[type="checkbox"] {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid rgba(13,27,42,0.2);
+    accent-color: var(--gold); cursor: pointer;
+  }
+  .forgot { font-size: 0.85rem; color: var(--gold); text-decoration: none; font-weight: 500; }
+  .forgot:hover { text-decoration: underline; }
+
+  /* Submit */
+  .submit-btn {
+    width: 100%; padding: 1rem;
+    background: linear-gradient(135deg, var(--navy), var(--navy-light));
+    color: var(--white); border: none;
+    border-radius: 10px; font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 600;
+    cursor: pointer; letter-spacing: 0.03em;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(13,27,42,0.3);
+  }
+  .submit-btn:active { transform: translateY(0); }
+
+  /* loading state */
+  .submit-btn.loading { pointer-events: none; }
+  .submit-btn .btn-text { transition: opacity 0.2s; }
+  .submit-btn .btn-spinner {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px; height: 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .submit-btn.loading .btn-text { opacity: 0; }
+  .submit-btn.loading .btn-spinner { opacity: 1; }
+  @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+  /* Message */
+  .msg {
+    padding: 0.75rem 1rem;
+    border-radius: 8px; font-size: 0.875rem;
+    margin-bottom: 1rem; display: none;
+    align-items: center; gap: 0.5rem;
+  }
+  .msg.error { background: rgba(224,92,92,0.1); color: var(--error); border: 1px solid rgba(224,92,92,0.25); display: flex; }
+  .msg.success { background: rgba(76,175,130,0.1); color: var(--success); border: 1px solid rgba(76,175,130,0.25); display: flex; }
+
+  /* divider */
+  .divider { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0; }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: rgba(13,27,42,0.1);
+  }
+  .divider span { font-size: 0.75rem; color: #aab2bd; white-space: nowrap; }
+
+  .alt-link {
+    text-align: center; font-size: 0.85rem;
+    color: #6b7280; margin-top: 0.5rem;
+  }
+  .alt-link a { color: var(--gold); font-weight: 600; text-decoration: none; }
+  .alt-link a:hover { text-decoration: underline; }
+
+  /* role-specific hints */
+  .role-hint {
+    display: none; background: rgba(201,150,58,0.08);
+    border: 1px solid rgba(201,150,58,0.2);
+    border-radius: 8px; padding: 0.65rem 0.85rem;
+    font-size: 0.8rem; color: #7a6030; margin-bottom: 1.25rem;
+    align-items: center; gap: 0.5rem;
+  }
+  .role-hint.visible { display: flex; }
+
+  /* univ badge */
+  .univ-badge {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.65rem 1rem;
+    background: rgba(13,27,42,0.05);
+    border-radius: 10px; margin-bottom: 1.75rem;
+  }
+  .univ-badge-text { font-size: 0.78rem; }
+  .univ-badge-text strong { display: block; color: var(--navy); font-weight: 600; font-size: 0.82rem; }
+  .univ-badge-text span { color: #9ca3af; }
+
+  @media (max-width: 768px) {
+    body { grid-template-columns: 1fr; }
+    .left-panel { display: none; }
+    .right-panel { padding: 2rem 1.5rem; min-height: 100vh; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+  <div class="left-bg"></div>
+  <div class="left-grid"></div>
+
+  <div class="left-content">
+    <a href="home.html" class="brand">
+      <div class="brand-icon">🎓</div>
+      <span class="brand-name">UV<span>EM</span></span>
+    </a>
+  </div>
+
+  <div class="left-hero left-content">
+    <div class="left-hero-label">Secure Digital Platform</div>
+    <h1>Vote. Participate.<br><em>Lead.</em></h1>
+    <p>The University Voting and Event Management System — a transparent, secure, and efficient platform for Parul University students and administrators.</p>
+    <div class="feature-pills">
+      <div class="pill"><div class="pill-dot"></div> One Person, One Vote</div>
+      <div class="pill"><div class="pill-dot"></div> Real-Time Results</div>
+      <div class="pill"><div class="pill-dot"></div> Secure Login</div>
+      <div class="pill"><div class="pill-dot"></div> Event Registration</div>
+    </div>
+  </div>
+
+  <div class="left-footer left-content">
+    <p>PIET · Parul University · Vadodara, Gujarat · 2025–2026</p>
+    <p style="margin-top:0.3rem">B.Tech Information Technology</p>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+  <div class="login-box">
+
+    <!-- University Badge -->
+    <div class="univ-badge">
+      <span style="font-size:1.5rem">🏛️</span>
+      <div class="univ-badge-text">
+        <strong>Parul Institute of Engineering & Technology</strong>
+        <span>Parul University, Vadodara</span>
+      </div>
+    </div>
+
+    <div class="login-header">
+      <h2>Welcome back</h2>
+      <p>Sign in to your account to continue</p>
+    </div>
+
+    <!-- Role Toggle -->
+    <div class="role-toggle" id="roleToggle">
+      <div class="role-slider" id="roleSlider"></div>
+      <button class="role-btn active" id="adminBtn" onclick="setRole('admin')">
+        🛡️ Admin
+      </button>
+      <button class="role-btn" id="studentBtn" onclick="setRole('student')">
+        🎓 Student
+      </button>
+    </div>
+
+    <!-- Admin Hint -->
+    <div class="role-hint" id="adminHint">
+      ℹ️ Admin credentials are provided by the department.
+    </div>
+    <!-- Student Hint -->
+    <div class="role-hint" id="studentHint">
+      ℹ️ Use your university enrollment ID and password.
+    </div>
+
+    <!-- Message -->
+    <div class="msg" id="msgBox"></div>
+
+    <!-- Form -->
+    <form id="loginForm" onsubmit="handleLogin(event)" novalidate>
+
+      <div class="form-group">
+        <label id="idLabel">Email or Admin ID</label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input type="text" id="userId" placeholder="Enter your email or Admin ID" required autocomplete="username">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="userPass" placeholder="Enter your password" required autocomplete="current-password">
+          <button type="button" class="pass-toggle" id="passToggle" onclick="togglePass()" title="Show/hide password">👁️</button>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="remember">
+          <input type="checkbox" id="rememberMe"> Remember me
+        </label>
+        <a href="#" class="forgot">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <span class="btn-text" id="btnText">Sign In</span>
+        <div class="btn-spinner"></div>
+      </button>
+
+    </form>
+
+    <div class="divider"><span>Parul University UVEM System</span></div>
+
+    <div class="alt-link">
+      <a href="home.html">← Back to Home</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let currentRole = 'admin';
+  let passVisible = false;
+
+  function setRole(role) {
+    currentRole = role;
+    const slider  = document.getElementById('roleSlider');
+    const adminBtn   = document.getElementById('adminBtn');
+    const studentBtn = document.getElementById('studentBtn');
+    const adminHint  = document.getElementById('adminHint');
+    const studentHint= document.getElementById('studentHint');
+    const idLabel = document.getElementById('idLabel');
+    const userId  = document.getElementById('userId');
+    const msgBox  = document.getElementById('msgBox');
+
+    msgBox.className = 'msg'; // hide message on role switch
+
+    if (role === 'admin') {
+      slider.classList.remove('student');
+      adminBtn.classList.add('active');
+      studentBtn.classList.remove('active');
+      adminHint.classList.add('visible');
+      studentHint.classList.remove('visible');
+      idLabel.textContent = 'Email or Admin ID';
+      userId.placeholder  = 'Enter your email or Admin ID';
+    } else {
+      slider.classList.add('student');
+      studentBtn.classList.add('active');
+      adminBtn.classList.remove('active');
+      studentHint.classList.add('visible');
+      adminHint.classList.remove('visible');
+      idLabel.textContent = 'Enrollment ID';
+      userId.placeholder  = 'Enter your Enrollment ID';
+    }
+  }
+
+  // show admin hint by default
+  document.getElementById('adminHint').classList.add('visible');
+
+  function togglePass() {
+    passVisible = !passVisible;
+    const passInput = document.getElementById('userPass');
+    const toggle    = document.getElementById('passToggle');
+    passInput.type  = passVisible ? 'text' : 'password';
+    toggle.textContent = passVisible ? '🙈' : '👁️';
+  }
+
+  function showMsg(text, type) {
+    const box = document.getElementById('msgBox');
+    box.textContent = (type === 'error' ? '⚠️ ' : '✅ ') + text;
+    box.className = 'msg ' + type;
+  }
+
+  function handleLogin(e) {
+    e.preventDefault();
+    const userId   = document.getElementById('userId').value.trim();
+    const userPass = document.getElementById('userPass').value;
+    const btn      = document.getElementById('submitBtn');
+    const btnText  = document.getElementById('btnText');
+
+    if (!userId || !userPass) {
+      showMsg('Please fill in all fields.', 'error'); return;
+    }
+    // Simulate loading
+    btn.classList.add('loading');
+
+    setTimeout(() => {
+      btn.classList.remove('loading');
+
+      // Credentials
+      const adminAccounts = [
+        { id: 'ahyr448@gmail.com', pass: '786183064Aa#$' },
+        { id: 'admin',             pass: 'admin123'      },
+      ];
+      const studentAccounts = [
+        { id: 'student', pass: 'student123' },
+      ];
+
+      const isAdmin   = adminAccounts.some(a => a.id === userId && a.pass === userPass);
+      const isStudent = studentAccounts.some(a => a.id === userId && a.pass === userPass);
+
+      if (currentRole === 'admin' && isAdmin) {
+        showMsg('Login successful! Redirecting to Admin Dashboard…', 'success');
+        btnText.textContent = '✓ Signed In';
+        setTimeout(() => window.location.href = 'admin-dashboard.html', 1500);
+      } else if (currentRole === 'student' && isStudent) {
+        showMsg('Login successful! Redirecting to Student Dashboard…', 'success');
+        btnText.textContent = '✓ Signed In';
+        setTimeout(() => window.location.href = 'student-dashboard.html', 1500);
+      } else {
+        showMsg('Invalid credentials. Please try again.', 'error');
+        document.getElementById('userPass').value = '';
+        btn.classList.remove('loading');
+        btnText.textContent = 'Sign In';
+      }
+    }, 1600);
+  }
+</script>
+</body>
+</html>

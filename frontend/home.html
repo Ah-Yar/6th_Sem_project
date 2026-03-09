@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UVEM – University Voting & Event Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0d1b2a;
+    --navy-mid: #1a2e45;
+    --gold: #c9963a;
+    --gold-light: #e8b86d;
+    --cream: #f7f3ed;
+    --cream-dark: #ede8df;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --white: #ffffff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 3rem;
+    background: rgba(13,27,42,0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(201,150,58,0.25);
+    animation: slideDown 0.6s ease forwards;
+  }
+
+  @keyframes slideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 0.75rem;
+    text-decoration: none;
+  }
+  .nav-logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+  }
+  .nav-logo-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+  .nav-logo-text span { color: var(--gold); }
+
+  .nav-links { display: flex; align-items: center; gap: 2rem; }
+  .nav-links a {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 0.875rem; font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+
+  .nav-btn {
+    padding: 0.55rem 1.4rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy) !important;
+    border-radius: 6px; font-weight: 600 !important;
+    letter-spacing: 0.06em; transition: opacity 0.2s !important;
+  }
+  .nav-btn:hover { opacity: 0.85; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: var(--navy);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 8rem 2rem 4rem;
+  }
+
+  /* geometric bg pattern */
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,150,58,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 15% 85%, rgba(201,150,58,0.08) 0%, transparent 60%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(201,150,58,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,150,58,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid rgba(201,150,58,0.4);
+    border-radius: 999px;
+    color: var(--gold-light);
+    font-size: 0.75rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s 0.2s ease both;
+    position: relative; z-index: 1;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold); display: block;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%{ opacity:0.5; transform:scale(1.4); }
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 700; line-height: 1.05;
+    color: var(--white);
+    position: relative; z-index: 1;
+    animation: fadeUp 0.8s 0.35s ease both;
+    max-width: 900px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    margin-top: 1.5rem;
+    color: rgba(255,255,255,0.6);
+    font-size: 1.1rem; max-width: 560px;
+    line-height: 1.7;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.8s 0.5s ease both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    justify-content: center; margin-top: 2.5rem;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.8s 0.65s ease both;
+  }
+
+  .btn-primary {
+    padding: 0.9rem 2.2rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy); font-weight: 600;
+    border: none; border-radius: 8px;
+    font-size: 0.95rem; cursor: pointer;
+    text-decoration: none; letter-spacing: 0.03em;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 24px rgba(201,150,58,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,150,58,0.45); }
+
+  .btn-outline {
+    padding: 0.9rem 2.2rem;
+    background: transparent;
+    color: var(--white); font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 8px; font-size: 0.95rem;
+    cursor: pointer; text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--gold-light); background: rgba(201,150,58,0.08); }
+
+  /* stats row */
+  .hero-stats {
+    display: flex; gap: 3rem; flex-wrap: wrap;
+    justify-content: center; margin-top: 4rem;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.8s 0.8s ease both;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 2.5rem; width: 100%; max-width: 700px;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem; font-weight: 700;
+    color: var(--gold-light);
+  }
+  .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.45); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.25rem; }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(24px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  /* ── FEATURES ── */
+  .section { padding: 6rem 2rem; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-size: 0.75rem; font-weight: 600;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700;
+    line-height: 1.1;
+  }
+  .section-desc { color: var(--muted); margin-top: 0.75rem; font-size: 1rem; max-width: 520px; line-height: 1.7; }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem; margin-top: 3.5rem;
+  }
+
+  .feature-card {
+    background: var(--white);
+    border-radius: 16px; padding: 2rem;
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: transform 0.25s, box-shadow 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
+  .feature-card:hover::before { transform: scaleX(1); }
+
+  .feature-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; margin-bottom: 1.25rem;
+    background: linear-gradient(135deg, rgba(201,150,58,0.12), rgba(232,184,109,0.08));
+  }
+  .feature-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .feature-card p  { color: var(--muted); font-size: 0.9rem; line-height: 1.65; }
+
+  /* ── HOW IT WORKS ── */
+  .how-section { background: var(--navy); color: var(--white); }
+  .how-section .section-title { color: var(--white); }
+  .how-section .section-desc  { color: rgba(255,255,255,0.55); }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem; margin-top: 3.5rem;
+  }
+  .step { text-align: center; }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem; font-weight: 700;
+    color: rgba(201,150,58,0.18);
+    line-height: 1; margin-bottom: 0.5rem;
+  }
+  .step-icon {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: rgba(201,150,58,0.12);
+    border: 1px solid rgba(201,150,58,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; margin: 0 auto 1rem;
+  }
+  .step h4 { font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem; }
+  .step p  { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+  /* ── CTA ── */
+  .cta-section {
+    background: linear-gradient(135deg, var(--gold), #b5802e);
+    padding: 5rem 2rem; text-align: center;
+  }
+  .cta-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem,5vw,3rem); font-weight: 700;
+    color: var(--navy); margin-bottom: 1rem;
+  }
+  .cta-section p { color: rgba(13,27,42,0.7); max-width: 480px; margin: 0 auto 2rem; line-height: 1.7; }
+  .btn-dark {
+    display: inline-block; padding: 0.9rem 2.4rem;
+    background: var(--navy); color: var(--white);
+    border-radius: 8px; font-weight: 600;
+    text-decoration: none; font-size: 0.95rem;
+    transition: background 0.2s;
+  }
+  .btn-dark:hover { background: var(--navy-mid); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #080f18; padding: 2.5rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  footer p { color: rgba(255,255,255,0.35); font-size: 0.8rem; }
+  .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; color: rgba(255,255,255,0.6); font-weight: 600;
+  }
+  .footer-brand span { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="home.html" class="nav-logo">
+    <div class="nav-logo-icon">🎓</div>
+    <span class="nav-logo-text">UV<span>EM</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How It Works</a>
+    <a href="login.html" class="nav-btn">Login</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-badge">Parul University · Vadodara</div>
+  <h1>University <em>Voting</em> &<br>Event Management</h1>
+  <p class="hero-sub">A secure, transparent, and modern platform for student elections and university event coordination — all in one place.</p>
+  <div class="hero-actions">
+    <a href="login.html" class="btn-primary">Get Started →</a>
+    <a href="#features" class="btn-outline">Learn More</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Digital & Secure</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">2</div>
+      <div class="stat-label">User Roles</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">1×</div>
+      <div class="stat-label">Vote Per Student</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">Real-Time</div>
+      <div class="stat-label">Results</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="section-inner">
+    <div class="section-label">What We Offer</div>
+    <h2 class="section-title">Everything your university needs,<br>in one platform</h2>
+    <p class="section-desc">Built for Parul Institute of Engineering & Technology — secure, fast, and easy to use.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🗳️</div>
+        <h3>Online Voting</h3>
+        <p>Students cast votes securely through an authenticated portal. One person, one vote — always guaranteed with tamper-resistant logic.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <h3>Event Management</h3>
+        <p>Admins create and manage events — seminars, fests, workshops — with online registrations, schedules, and announcements.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔐</div>
+        <h3>Secure Authentication</h3>
+        <p>Role-based login for Admin and Student users. Passwords are protected and sessions are secured against unauthorized access.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Instant Results</h3>
+        <p>Vote counting is automated and results are displayed in real time — no manual tallying, no delays, no errors.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧑‍💼</div>
+        <h3>Admin Dashboard</h3>
+        <p>Full control panel for administrators to manage elections, candidates, events, registrations, and view analytics.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <h3>Report Generation</h3>
+        <p>Export detailed reports of election results and event participation for record keeping and transparency.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section how-section" id="how">
+  <div class="section-inner">
+    <div class="section-label" style="color:var(--gold-light)">System Flow</div>
+    <h2 class="section-title">How it works</h2>
+    <p class="section-desc">The platform follows a clear, structured flow — from login to result, every step is handled automatically.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-icon">🔑</div>
+        <h4>Select Login Type</h4>
+        <p>Choose whether you're an Admin or a Student to enter the appropriate portal.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-icon">✅</div>
+        <h4>Authenticate</h4>
+        <p>Enter your credentials. The system verifies identity and grants or denies access accordingly.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-icon">🗳️</div>
+        <h4>Vote or Manage</h4>
+        <p>Students cast their vote; admins create events, manage elections and view dashboards.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-icon">📈</div>
+        <h4>View Results</h4>
+        <p>Results are counted and displayed instantly. Everyone can see transparent, real-time outcomes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Ready to cast your vote?</h2>
+  <p>Log in with your student credentials and participate in your university's democratic process today.</p>
+  <a href="login.html" class="btn-dark">Go to Login →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">UV<span>EM</span> · Parul University</div>
+  <p>Department of Information Technology · PIET · Vadodara, Gujarat · 2025–2026</p>
+  <p style="color:rgba(255,255,255,0.2)">B.Tech IT Project</p>
+</footer>
+
+</body>
+</html>

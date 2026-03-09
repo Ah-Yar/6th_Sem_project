@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard – UVEM</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:       #0d1b2a;
+  --navy-mid:   #1a2e45;
+  --navy-light: #243b55;
+  --navy-card:  #162030;
+  --gold:       #c9963a;
+  --gold-light: #e8b86d;
+  --gold-dim:   rgba(201,150,58,0.15);
+  --cream:      #f5f1eb;
+  --sidebar-w:  260px;
+  --white:      #ffffff;
+  --text:       #e8edf4;
+  --muted:      #7a90a8;
+  --green:      #3ecf8e;
+  --red:        #e05c5c;
+  --blue:       #5b9bd5;
+  --border:     rgba(255,255,255,0.06);
+}
+
+html, body { height: 100%; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ══════════════════════════════════
+   SIDEBAR
+══════════════════════════════════ */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--navy-card);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0;
+  z-index: 50;
+  animation: sideIn 0.5s ease both;
+}
+
+@keyframes sideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+.sidebar-logo {
+  padding: 1.75rem 1.5rem 1.25rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
+.sidebar-logo-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem; font-weight: 700;
+  color: var(--white);
+}
+.sidebar-logo-text span { color: var(--gold); }
+
+.sidebar-section {
+  padding: 1.5rem 1rem 0.5rem;
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted);
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.7rem 1.5rem;
+  color: var(--muted);
+  text-decoration: none; font-size: 0.875rem; font-weight: 500;
+  border-radius: 0; cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  border-left: 3px solid transparent;
+  position: relative;
+}
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-item.active {
+  color: var(--gold-light); background: var(--gold-dim);
+  border-left-color: var(--gold);
+}
+.nav-item .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+.nav-badge {
+  margin-left: auto; background: var(--red);
+  color: white; font-size: 0.65rem; font-weight: 700;
+  padding: 0.15rem 0.45rem; border-radius: 999px;
+}
+
+.sidebar-footer {
+  margin-top: auto; padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.user-pill {
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.user-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; font-weight: 700; color: var(--navy);
+  flex-shrink: 0;
+}
+.user-info .user-name { font-size: 0.875rem; font-weight: 600; color: var(--text); }
+.user-info .user-role { font-size: 0.72rem; color: var(--gold); }
+.logout-btn {
+  margin-left: auto; background: none; border: none;
+  color: var(--muted); cursor: pointer; font-size: 1rem;
+  transition: color 0.2s; padding: 0.25rem;
+}
+.logout-btn:hover { color: var(--red); }
+
+/* ══════════════════════════════════
+   MAIN
+══════════════════════════════════ */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1; display: flex; flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Top bar */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 2.5rem;
+  background: rgba(13,27,42,0.6);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 40;
+  animation: topIn 0.5s 0.1s ease both;
+}
+@keyframes topIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.topbar-left h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem; font-weight: 700; color: var(--white);
+}
+.topbar-left p { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
+
+.topbar-right { display: flex; align-items: center; gap: 1rem; }
+
+.topbar-btn {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--navy); border: none; border-radius: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.825rem; font-weight: 600;
+  cursor: pointer; transition: opacity 0.2s, transform 0.2s;
+}
+.topbar-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+.notif-btn {
+  position: relative; background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border); border-radius: 8px;
+  width: 38px; height: 38px; display: flex; align-items: center;
+  justify-content: center; cursor: pointer; font-size: 1rem;
+  transition: background 0.2s;
+}
+.notif-btn:hover { background: rgba(255,255,255,0.1); }
+.notif-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--red); border: 2px solid var(--navy-card);
+}
+
+/* ══════════════════════════════════
+   CONTENT
+══════════════════════════════════ */
+.content {
+  padding: 2rem 2.5rem; flex: 1;
+  animation: contentIn 0.6s 0.2s ease both;
+}
+@keyframes contentIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── STAT CARDS ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem; margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--navy-card);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.5rem;
+  position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.3); }
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.stat-card.gold::before  { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+.stat-card.green::before { background: linear-gradient(90deg, var(--green), #7ee8c0); }
+.stat-card.blue::before  { background: linear-gradient(90deg, var(--blue), #8ec5e8); }
+.stat-card.red::before   { background: linear-gradient(90deg, var(--red), #e8836d); }
+
+.stat-card-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.stat-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+}
+.stat-icon.gold  { background: rgba(201,150,58,0.15); }
+.stat-icon.green { background: rgba(62,207,142,0.12); }
+.stat-icon.blue  { background: rgba(91,155,213,0.12); }
+.stat-icon.red   { background: rgba(224,92,92,0.12); }
+
+.stat-trend {
+  font-size: 0.72rem; font-weight: 600;
+  padding: 0.2rem 0.55rem; border-radius: 999px;
+}
+.stat-trend.up   { background: rgba(62,207,142,0.12); color: var(--green); }
+.stat-trend.down { background: rgba(224,92,92,0.12); color: var(--red); }
+
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.4rem; font-weight: 700; color: var(--white);
+  line-height: 1;
+}
+.stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.35rem; }
+
+/* progress bar inside card */
+.stat-bar {
+  margin-top: 1rem; height: 4px;
+  background: rgba(255,255,255,0.07); border-radius: 99px; overflow: hidden;
+}
+.stat-bar-fill {
+  height: 100%; border-radius: 99px;
+  transition: width 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.stat-bar-fill.gold  { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+.stat-bar-fill.green { background: var(--green); }
+.stat-bar-fill.blue  { background: var(--blue); }
+.stat-bar-fill.red   { background: var(--red); }
+
+/* ── MID GRID ── */
+.mid-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.25rem; margin-bottom: 2rem;
+}
+
+/* Panel card */
+.panel {
+  background: var(--navy-card);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.5rem;
+}
+.panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.panel-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 700; color: var(--white);
+}
+.panel-action {
+  font-size: 0.78rem; color: var(--gold); cursor: pointer;
+  background: none; border: none; font-family: 'DM Sans', sans-serif;
+  font-weight: 500; transition: opacity 0.2s;
+}
+.panel-action:hover { opacity: 0.7; }
+
+/* Vote chart */
+.vote-chart { display: flex; flex-direction: column; gap: 1rem; }
+.vote-row { }
+.vote-row-header {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 0.4rem;
+}
+.vote-name { font-size: 0.875rem; font-weight: 500; }
+.vote-count { font-size: 0.8rem; color: var(--muted); }
+.vote-bar-bg {
+  height: 10px; background: rgba(255,255,255,0.07);
+  border-radius: 99px; overflow: hidden;
+}
+.vote-bar-fill {
+  height: 100%; border-radius: 99px;
+  transition: width 1.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Events list */
+.event-list { display: flex; flex-direction: column; gap: 0.85rem; }
+.event-item {
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.85rem; background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border); border-radius: 10px;
+  transition: background 0.2s;
+}
+.event-item:hover { background: rgba(255,255,255,0.06); }
+.event-date-box {
+  width: 42px; height: 48px; border-radius: 8px;
+  background: var(--gold-dim); border: 1px solid rgba(201,150,58,0.25);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.event-date-box .month { font-size: 0.6rem; font-weight: 600; color: var(--gold); text-transform: uppercase; }
+.event-date-box .day   { font-size: 1.1rem; font-weight: 700; color: var(--white); line-height: 1; }
+.event-info .event-name { font-size: 0.875rem; font-weight: 500; }
+.event-info .event-meta { font-size: 0.75rem; color: var(--muted); margin-top: 0.15rem; }
+.event-status {
+  margin-left: auto; font-size: 0.7rem; font-weight: 600;
+  padding: 0.2rem 0.6rem; border-radius: 999px;
+}
+.event-status.active   { background: rgba(62,207,142,0.12); color: var(--green); }
+.event-status.upcoming { background: rgba(91,155,213,0.12); color: var(--blue); }
+.event-status.closed   { background: rgba(255,255,255,0.06); color: var(--muted); }
+
+/* ── BOTTOM GRID ── */
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+/* Recent votes table */
+.table { width: 100%; border-collapse: collapse; }
+.table th {
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted);
+  padding: 0 0 0.75rem; border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+.table td {
+  padding: 0.85rem 0; font-size: 0.85rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+.table tr:last-child td { border-bottom: none; }
+.table tr:hover td { color: var(--white); }
+
+.td-id { color: var(--muted); font-size: 0.75rem; font-family: monospace; }
+.td-name { font-weight: 500; }
+.td-badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 600;
+  padding: 0.2rem 0.55rem; border-radius: 999px;
+}
+.td-badge.voted  { background: rgba(62,207,142,0.12); color: var(--green); }
+.td-badge.pending{ background: rgba(255,204,0,0.12); color: #f5c842; }
+
+/* Quick actions */
+.actions-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;
+}
+.action-tile {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.1rem;
+  text-align: center; cursor: pointer;
+  transition: background 0.2s, transform 0.2s, border-color 0.2s;
+}
+.action-tile:hover {
+  background: var(--gold-dim);
+  border-color: rgba(201,150,58,0.3);
+  transform: translateY(-2px);
+}
+.action-tile .action-icon { font-size: 1.6rem; margin-bottom: 0.5rem; }
+.action-tile .action-label { font-size: 0.8rem; font-weight: 500; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(5,12,20,0.8); backdrop-filter: blur(6px);
+  z-index: 200; display: none; align-items: center; justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+.modal-overlay.open { display: flex; }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+.modal {
+  background: var(--navy-card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 2rem; width: 100%; max-width: 500px;
+  animation: modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes modalPop {
+  from { opacity:0; transform: scale(0.92); }
+  to   { opacity:1; transform: scale(1); }
+}
+.modal h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 700; margin-bottom: 1.25rem;
+  color: var(--white);
+}
+.modal-form { display: flex; flex-direction: column; gap: 1rem; }
+.modal-field label {
+  display: block; font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 0.4rem;
+}
+.modal-field input, .modal-field select, .modal-field textarea {
+  width: 100%; padding: 0.75rem 1rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text); font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.modal-field input:focus, .modal-field select:focus {
+  border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-dim);
+}
+.modal-field select option { background: var(--navy-mid); }
+.modal-row { display: flex; gap: 0.75rem; }
+.modal-row .modal-field { flex: 1; }
+.modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 0.5rem; }
+.btn-modal-cancel {
+  padding: 0.65rem 1.4rem; border-radius: 8px;
+  border: 1px solid var(--border); background: none;
+  color: var(--muted); font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem; cursor: pointer; transition: color 0.2s, border-color 0.2s;
+}
+.btn-modal-cancel:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+.btn-modal-submit {
+  padding: 0.65rem 1.6rem; border-radius: 8px;
+  border: none; background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--navy); font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem; font-weight: 600; cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-modal-submit:hover { opacity: 0.85; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 300;
+  background: var(--navy-light); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1rem 1.25rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  font-size: 0.875rem; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  transform: translateY(80px); opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+  max-width: 320px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast-icon { font-size: 1.2rem; }
+
+@media (max-width: 1100px) {
+  .stats-grid { grid-template-columns: repeat(2,1fr); }
+  .mid-grid, .bottom-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .main { margin-left: 0; }
+  .content { padding: 1.25rem; }
+  .topbar { padding: 1rem 1.25rem; }
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">🎓</div>
+    <span class="sidebar-logo-text">UV<span>EM</span></span>
+  </div>
+
+  <div class="sidebar-section">Main Menu</div>
+  <a class="nav-item active" onclick="showSection('dashboard')">
+    <span class="nav-icon">🏠</span> Dashboard
+  </a>
+  <a class="nav-item" onclick="showSection('elections')">
+    <span class="nav-icon">🗳️</span> Elections
+  </a>
+  <a class="nav-item" onclick="showSection('events')">
+    <span class="nav-icon">📅</span> Events
+    <span class="nav-badge">3</span>
+  </a>
+  <a class="nav-item" onclick="showSection('candidates')">
+    <span class="nav-icon">👤</span> Candidates
+  </a>
+  <a class="nav-item" onclick="showSection('students')">
+    <span class="nav-icon">🎓</span> Students
+  </a>
+
+  <div class="sidebar-section">Reports</div>
+  <a class="nav-item" onclick="showSection('results')">
+    <span class="nav-icon">📊</span> Results
+  </a>
+  <a class="nav-item" onclick="showSection('reports')">
+    <span class="nav-icon">📋</span> Reports
+  </a>
+
+  <div class="sidebar-section">System</div>
+  <a class="nav-item" onclick="showSection('settings')">
+    <span class="nav-icon">⚙️</span> Settings
+  </a>
+
+  <div class="sidebar-footer">
+    <div class="user-pill">
+      <div class="user-avatar">A</div>
+      <div class="user-info">
+        <div class="user-name">Admin</div>
+        <div class="user-role">Administrator</div>
+      </div>
+      <button class="logout-btn" onclick="window.location.href='login.html'" title="Logout">⬅</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<main class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Admin Dashboard</h1>
+      <p id="topbar-date">Monday, March 09, 2026 · Parul University</p>
+    </div>
+    <div class="topbar-right">
+      <div class="notif-btn" title="Notifications">🔔<div class="notif-dot"></div></div>
+      <button class="topbar-btn" onclick="openModal('event')">＋ Create Event</button>
+      <button class="topbar-btn" onclick="openModal('election')" style="background:linear-gradient(135deg,var(--navy-light),var(--navy-mid));color:var(--gold-light);border:1px solid rgba(201,150,58,0.3)">＋ New Election</button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- STAT CARDS -->
+    <div class="stats-grid">
+      <div class="stat-card gold">
+        <div class="stat-card-header">
+          <div class="stat-icon gold">🗳️</div>
+          <span class="stat-trend up">↑ 12%</span>
+        </div>
+        <div class="stat-num" data-target="342">0</div>
+        <div class="stat-label">Total Votes Cast</div>
+        <div class="stat-bar"><div class="stat-bar-fill gold" style="width:0" data-w="72%"></div></div>
+      </div>
+
+      <div class="stat-card green">
+        <div class="stat-card-header">
+          <div class="stat-icon green">🎓</div>
+          <span class="stat-trend up">↑ 4%</span>
+        </div>
+        <div class="stat-num" data-target="1248">0</div>
+        <div class="stat-label">Registered Students</div>
+        <div class="stat-bar"><div class="stat-bar-fill green" style="width:0" data-w="88%"></div></div>
+      </div>
+
+      <div class="stat-card blue">
+        <div class="stat-card-header">
+          <div class="stat-icon blue">📅</div>
+          <span class="stat-trend up">↑ 2</span>
+        </div>
+        <div class="stat-num" data-target="8">0</div>
+        <div class="stat-label">Active Events</div>
+        <div class="stat-bar"><div class="stat-bar-fill blue" style="width:0" data-w="55%"></div></div>
+      </div>
+
+      <div class="stat-card red">
+        <div class="stat-card-header">
+          <div class="stat-icon red">⚠️</div>
+          <span class="stat-trend down">↓ 1</span>
+        </div>
+        <div class="stat-num" data-target="3">0</div>
+        <div class="stat-label">Pending Approvals</div>
+        <div class="stat-bar"><div class="stat-bar-fill red" style="width:0" data-w="25%"></div></div>
+      </div>
+    </div>
+
+    <!-- MID ROW -->
+    <div class="mid-grid">
+
+      <!-- Live Vote Results -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">🗳️ Live Election Results</span>
+          <button class="panel-action">View Full →</button>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1.25rem">
+          Student Council Election 2025–26 · 342 votes counted
+        </div>
+        <div class="vote-chart">
+          <div class="vote-row">
+            <div class="vote-row-header">
+              <span class="vote-name">Aryan Mehta <span style="font-size:0.7rem;color:var(--gold)">★ Leading</span></span>
+              <span class="vote-count">124 votes · 36.3%</span>
+            </div>
+            <div class="vote-bar-bg"><div class="vote-bar-fill" style="width:0;background:linear-gradient(90deg,var(--gold),var(--gold-light))" data-w="72%"></div></div>
+          </div>
+          <div class="vote-row">
+            <div class="vote-row-header">
+              <span class="vote-name">Priya Sharma</span>
+              <span class="vote-count">98 votes · 28.7%</span>
+            </div>
+            <div class="vote-bar-bg"><div class="vote-bar-fill" style="width:0;background:var(--blue)" data-w="57%"></div></div>
+          </div>
+          <div class="vote-row">
+            <div class="vote-row-header">
+              <span class="vote-name">Ravi Patel</span>
+              <span class="vote-count">76 votes · 22.2%</span>
+            </div>
+            <div class="vote-bar-bg"><div class="vote-bar-fill" style="width:0;background:var(--green)" data-w="44%"></div></div>
+          </div>
+          <div class="vote-row">
+            <div class="vote-row-header">
+              <span class="vote-name">Sneha Joshi</span>
+              <span class="vote-count">44 votes · 12.8%</span>
+            </div>
+            <div class="vote-bar-bg"><div class="vote-bar-fill" style="width:0;background:var(--red)" data-w="26%"></div></div>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:0.78rem;color:var(--muted)">Voter Turnout</span>
+          <span style="font-size:0.875rem;font-weight:600;color:var(--green)">27.4% · Live</span>
+        </div>
+      </div>
+
+      <!-- Upcoming Events -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">📅 Events</span>
+          <button class="panel-action" onclick="openModal('event')">＋ Add</button>
+        </div>
+        <div class="event-list">
+          <div class="event-item">
+            <div class="event-date-box">
+              <span class="month">Mar</span>
+              <span class="day">12</span>
+            </div>
+            <div class="event-info">
+              <div class="event-name">TechFest 2026</div>
+              <div class="event-meta">Main Auditorium · 142 registered</div>
+            </div>
+            <span class="event-status active">Active</span>
+          </div>
+          <div class="event-item">
+            <div class="event-date-box">
+              <span class="month">Mar</span>
+              <span class="day">18</span>
+            </div>
+            <div class="event-info">
+              <div class="event-name">AI Seminar</div>
+              <div class="event-meta">Seminar Hall B · 67 registered</div>
+            </div>
+            <span class="event-status upcoming">Upcoming</span>
+          </div>
+          <div class="event-item">
+            <div class="event-date-box">
+              <span class="month">Mar</span>
+              <span class="day">25</span>
+            </div>
+            <div class="event-info">
+              <div class="event-name">Cultural Night</div>
+              <div class="event-meta">Open Ground · 210 registered</div>
+            </div>
+            <span class="event-status upcoming">Upcoming</span>
+          </div>
+          <div class="event-item">
+            <div class="event-date-box">
+              <span class="month">Feb</span>
+              <span class="day">28</span>
+            </div>
+            <div class="event-info">
+              <div class="event-name">Hackathon 2026</div>
+              <div class="event-meta">Lab Complex · 88 participated</div>
+            </div>
+            <span class="event-status closed">Closed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM ROW -->
+    <div class="bottom-grid">
+
+      <!-- Recent Voter Activity -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">📋 Recent Voter Activity</span>
+          <button class="panel-action">Export →</button>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Enroll ID</th>
+              <th>Student</th>
+              <th>Dept</th>
+              <th>Status</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-id">22IT0041</td>
+              <td class="td-name">Aye Mu</td>
+              <td style="color:var(--muted);font-size:0.8rem">IT</td>
+              <td><span class="td-badge voted">✓ Voted</span></td>
+              <td style="color:var(--muted);font-size:0.78rem">10:24 AM</td>
+            </tr>
+            <tr>
+              <td class="td-id">22IT0082</td>
+              <td class="td-name">Ah Yar</td>
+              <td style="color:var(--muted);font-size:0.8rem">IT</td>
+              <td><span class="td-badge voted">✓ Voted</span></td>
+              <td style="color:var(--muted);font-size:0.78rem">10:31 AM</td>
+            </tr>
+            <tr>
+              <td class="td-id">22IT0113</td>
+              <td class="td-name">Ranjan Pasman</td>
+              <td style="color:var(--muted);font-size:0.8rem">IT</td>
+              <td><span class="td-badge voted">✓ Voted</span></td>
+              <td style="color:var(--muted);font-size:0.78rem">10:45 AM</td>
+            </tr>
+            <tr>
+              <td class="td-id">22IT0156</td>
+              <td class="td-name">Amit Patel</td>
+              <td style="color:var(--muted);font-size:0.8rem">IT</td>
+              <td><span class="td-badge pending">⏳ Pending</span></td>
+              <td style="color:var(--muted);font-size:0.78rem">—</td>
+            </tr>
+            <tr>
+              <td class="td-id">22CS0031</td>
+              <td class="td-name">Meera Shah</td>
+              <td style="color:var(--muted);font-size:0.8rem">CS</td>
+              <td><span class="td-badge voted">✓ Voted</span></td>
+              <td style="color:var(--muted);font-size:0.78rem">11:02 AM</td>
+            </tr>
+            <tr>
+              <td class="td-id">22CS0077</td>
+              <td class="td-name">Dev Sharma</td>
+              <td style="color:var(--muted);font-size:0.8rem">CS</td>
+              <td><span class="td-badge pending">⏳ Pending</span></td>
+              <td style="color:var(--muted);font-size:0.78rem">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">⚡ Quick Actions</span>
+        </div>
+        <div class="actions-grid">
+          <div class="action-tile" onclick="openModal('election')">
+            <div class="action-icon">🗳️</div>
+            <div class="action-label">New Election</div>
+          </div>
+          <div class="action-tile" onclick="openModal('event')">
+            <div class="action-icon">📅</div>
+            <div class="action-label">Create Event</div>
+          </div>
+          <div class="action-tile" onclick="openModal('candidate')">
+            <div class="action-icon">👤</div>
+            <div class="action-label">Add Candidate</div>
+          </div>
+          <div class="action-tile" onclick="showToast('📊 Generating report…')">
+            <div class="action-icon">📊</div>
+            <div class="action-label">Export Results</div>
+          </div>
+          <div class="action-tile" onclick="showToast('📨 Notifications sent to all students.')">
+            <div class="action-icon">📨</div>
+            <div class="action-label">Send Notice</div>
+          </div>
+          <div class="action-tile" onclick="showToast('⏸️ Voting paused successfully.')">
+            <div class="action-icon">⏸️</div>
+            <div class="action-label">Pause Voting</div>
+          </div>
+          <div class="action-tile" onclick="showToast('🏆 Results published!')">
+            <div class="action-icon">🏆</div>
+            <div class="action-label">Publish Results</div>
+          </div>
+          <div class="action-tile" onclick="window.location.href='login.html'">
+            <div class="action-icon">🚪</div>
+            <div class="action-label">Logout</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<!-- ══ MODALS ══ -->
+<!-- Create Event Modal -->
+<div class="modal-overlay" id="modal-event">
+  <div class="modal">
+    <h3>📅 Create New Event</h3>
+    <div class="modal-form">
+      <div class="modal-field">
+        <label>Event Name</label>
+        <input type="text" placeholder="e.g. TechFest 2026">
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Date</label>
+          <input type="date">
+        </div>
+        <div class="modal-field">
+          <label>Time</label>
+          <input type="time">
+        </div>
+      </div>
+      <div class="modal-field">
+        <label>Venue</label>
+        <input type="text" placeholder="e.g. Main Auditorium">
+      </div>
+      <div class="modal-field">
+        <label>Category</label>
+        <select>
+          <option>Technical</option>
+          <option>Cultural</option>
+          <option>Seminar</option>
+          <option>Workshop</option>
+          <option>Sports</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label>Max Participants</label>
+        <input type="number" placeholder="e.g. 200">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeModal('event')">Cancel</button>
+      <button class="btn-modal-submit" onclick="submitModal('event')">Create Event</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Election Modal -->
+<div class="modal-overlay" id="modal-election">
+  <div class="modal">
+    <h3>🗳️ Launch New Election</h3>
+    <div class="modal-form">
+      <div class="modal-field">
+        <label>Election Title</label>
+        <input type="text" placeholder="e.g. Student Council 2026–27">
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Start Date</label>
+          <input type="date">
+        </div>
+        <div class="modal-field">
+          <label>End Date</label>
+          <input type="date">
+        </div>
+      </div>
+      <div class="modal-field">
+        <label>Election Type</label>
+        <select>
+          <option>Student Council</option>
+          <option>Department Representative</option>
+          <option>Club President</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label>Eligible Voters</label>
+        <select>
+          <option>All Students</option>
+          <option>Final Year Only</option>
+          <option>IT Department</option>
+          <option>CS Department</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeModal('election')">Cancel</button>
+      <button class="btn-modal-submit" onclick="submitModal('election')">Launch Election</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Candidate Modal -->
+<div class="modal-overlay" id="modal-candidate">
+  <div class="modal">
+    <h3>👤 Add Candidate</h3>
+    <div class="modal-form">
+      <div class="modal-field">
+        <label>Full Name</label>
+        <input type="text" placeholder="Student full name">
+      </div>
+      <div class="modal-field">
+        <label>Enrollment ID</label>
+        <input type="text" placeholder="e.g. 22IT0041">
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Department</label>
+          <select>
+            <option>Information Technology</option>
+            <option>Computer Science</option>
+            <option>Electronics</option>
+            <option>Mechanical</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Year</label>
+          <select>
+            <option>1st Year</option>
+            <option>2nd Year</option>
+            <option>3rd Year</option>
+            <option>4th Year</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-field">
+        <label>Position Applying For</label>
+        <input type="text" placeholder="e.g. President, Secretary">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeModal('candidate')">Cancel</button>
+      <button class="btn-modal-submit" onclick="submitModal('candidate')">Add Candidate</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toast-icon">✅</span>
+  <span id="toast-msg">Action completed successfully.</span>
+</div>
+
+<script>
+// ── Animate counters
+window.addEventListener('load', () => {
+  document.querySelectorAll('[data-target]').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    let cur = 0;
+    const dur = 1400;
+    const step = target / (dur / 16);
+    const timer = setInterval(() => {
+      cur = Math.min(cur + step, target);
+      el.textContent = Math.floor(cur).toLocaleString();
+      if (cur >= target) clearInterval(timer);
+    }, 16);
+  });
+
+  // Animate bars
+  setTimeout(() => {
+    document.querySelectorAll('[data-w]').forEach(el => {
+      el.style.width = el.dataset.w;
+    });
+  }, 200);
+});
+
+// ── Nav highlight
+function showSection(name) {
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  showToast('📂 ' + name.charAt(0).toUpperCase() + name.slice(1) + ' section loaded.');
+}
+
+// ── Modals
+function openModal(type) {
+  document.getElementById('modal-' + type).classList.add('open');
+}
+function closeModal(type) {
+  document.getElementById('modal-' + type).classList.remove('open');
+}
+function submitModal(type) {
+  closeModal(type);
+  const msgs = {
+    event: '📅 Event created successfully!',
+    election: '🗳️ Election launched!',
+    candidate: '👤 Candidate added!'
+  };
+  showToast(msgs[type] || '✅ Done!');
+}
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+
+// ── Toast
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+</script>
+</body>
+</html>
